@@ -7,14 +7,15 @@ on:
     branches: [ master ]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag lab-python-consumer:$(date +%s)
+  push:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
     - name: Push Docker image to Docker Hub
       run: docker push diegoluisi/lab-python-consumer:$(date +%s)
