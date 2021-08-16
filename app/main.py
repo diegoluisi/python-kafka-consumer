@@ -33,7 +33,7 @@ class Consumer(threading.Thread):
         self.stop_event.set()
 
     def run(self):
-        consumer = KafkaConsumer(bootstrap_servers='localhost:9092',
+        consumer = KafkaConsumer(bootstrap_servers='kafka-service:9092',
                                  auto_offset_reset='earliest',
                                  consumer_timeout_ms=1000)
         consumer.subscribe(['my-topic'])
@@ -50,7 +50,7 @@ class Consumer(threading.Thread):
 def main():
     # Create 'my-topic' Kafka topic
     try:
-        admin = KafkaAdminClient(bootstrap_servers='localhost:9092')
+        admin = KafkaAdminClient(bootstrap_servers='kafka-service:9092')
 
         topic = NewTopic(name='my-topic',
                          num_partitions=1,
