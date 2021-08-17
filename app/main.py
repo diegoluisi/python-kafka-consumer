@@ -14,7 +14,7 @@ class Producer(threading.Thread):
         self.stop_event.set()
 
     def run(self):
-        producer = KafkaProducer(bootstrap_servers='lab-python-kafka-bootstrap:9092')
+        producer = KafkaProducer(bootstrap_servers='lab-python-kafka-bootstrap.kafka.svc.cluster.local:9092')
 
         while not self.stop_event.is_set():
             producer.send('my-topic', b"test")
@@ -33,7 +33,7 @@ class Consumer(threading.Thread):
         self.stop_event.set()
 
     def run(self):
-        consumer = KafkaConsumer(bootstrap_servers='lab-python-kafka-bootstrap:9092',
+        consumer = KafkaConsumer(bootstrap_servers='lab-python-kafka-bootstrap.kafka.svc.cluster.local:9092',
                                  auto_offset_reset='earliest',
                                  consumer_timeout_ms=1000)
         consumer.subscribe(['my-topic'])
@@ -50,7 +50,7 @@ class Consumer(threading.Thread):
 def main():
     # Create 'my-topic' Kafka topic
     try:
-        admin = KafkaAdminClient(bootstrap_servers='lab-python-kafka-bootstrap:9092')
+        admin = KafkaAdminClient(bootstrap_servers='lab-python-kafka-bootstrap.kafka.svc.cluster.local:9092')
 
         topic = NewTopic(name='my-topic',
                          num_partitions=1,
