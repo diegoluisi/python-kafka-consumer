@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import threading, time
 
-from kafka import KafkaAdminClient, KafkaConsumer, KafkaProducer
+from kafka import KafkaAdminClient, KafkaConsumer
 from kafka.admin import NewTopic
 
 
@@ -41,7 +41,6 @@ def main():
         pass
 
     tasks = [
-        Producer(),
         Consumer()
     ]
 
