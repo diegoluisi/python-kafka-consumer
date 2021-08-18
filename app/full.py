@@ -5,6 +5,25 @@ from kafka import KafkaAdminClient, KafkaConsumer, KafkaProducer
 from kafka.admin import NewTopic
 
 
+class Producer(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.stop_event = threading.Event()
+
+    def stop(self):
+        self.stop_event.set()
+
+    def run(self):
+        producer = KafkaProducer(bootstrap_servers='lab-python-kafka-brokers.kafka.svc.cluster.local:9092')
+
+        while not self.stop_event.is_set():
+            producer.send('my-topic', b"test")
+            producer.send('my-topic', b"\xc2Hola, mundo!")
+            time.sleep(1)
+
+        producer.close()
+
+
 class Consumer(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
@@ -17,7 +36,7 @@ class Consumer(threading.Thread):
         consumer = KafkaConsumer(bootstrap_servers='lab-python-kafka-brokers.kafka.svc.cluster.local:9092',
                                  auto_offset_reset='earliest',
                                  consumer_timeout_ms=1000)
-        consumer.subscribe(['input'])
+        consumer.subscribe(['my-topic'])
 
         while not self.stop_event.is_set():
             for message in consumer:
@@ -29,11 +48,11 @@ class Consumer(threading.Thread):
 
 
 def main():
-    # Create 'input' Kafka topic
+    # Create 'my-topic' Kafka topic
     try:
         admin = KafkaAdminClient(bootstrap_servers='lab-python-kafka-brokers.kafka.svc.cluster.local:9092')
 
-        topic = NewTopic(name='input',
+        topic = NewTopic(name='my-topic',
                          num_partitions=1,
                          replication_factor=1)
         admin.create_topics([topic])
@@ -45,7 +64,7 @@ def main():
         Consumer()
     ]
 
-    # Start threads of a publisher/producer and a subscriber/consumer to 'input' Kafka topic
+    # Start threads of a publisher/producer and a subscriber/consumer to 'my-topic' Kafka topic
     for t in tasks:
         t.start()
 
