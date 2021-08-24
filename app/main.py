@@ -33,7 +33,7 @@ def main():
     try:
         admin = KafkaAdminClient(bootstrap_servers='lab-python-kafka-brokers.kafka.svc.cluster.local:9092')
 
-        topic = NewTopic(name='input',
+        topic = NewTopic(name='output',
                          num_partitions=1,
                          replication_factor=1)
         admin.create_topics([topic])
